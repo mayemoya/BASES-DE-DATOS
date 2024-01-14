@@ -1,1 +1,42 @@
-
+CREATE TABLE Categoria (
+  ID SERIAL PRIMARY KEY,
+  Nombre VARCHAR
+);
+CREATE TABLE Producto (
+  ID SERIAL PRIMARY KEY,
+  Nombre VARCHAR,
+  Marca VARCHAR,
+  Categoria_id INTEGER,
+  Precio_unitario INTEGER
+);
+CREATE TABLE Sucursal (
+  ID SERIAL PRIMARY KEY,
+  Nombre VARCHAR,
+  Direccion VARCHAR
+);
+CREATE TABLE Stock (
+    ID SERIAL PRIMARY KEY,
+    Sucursal_id INTEGER NOT NULL,
+    Producto_id INTEGER NOT NULL,
+    Cantidad INTEGER,
+    UNIQUE (Sucursal_id, Producto_id)
+);
+CREATE TABLE Cliente (
+  ID SERIAL PRIMARY KEY,
+  Nombre VARCHAR,
+  Telefono VARCHAR
+);
+CREATE TABLE Orden (
+  ID SERIAL PRIMARY KEY,
+  Cliente_id INTEGER,
+  Sucursal_id INTEGER,
+  Fecha VARCHAR,
+  Total INTEGER
+);
+CREATE TABLE Item (
+  ID SERIAL PRIMARY KEY,
+  Orden_id INTEGER,
+  Producto_id INTEGER,
+  Cantidad INTEGER,
+  Monto_venta INTEGER
+);
