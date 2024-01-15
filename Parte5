@@ -1,0 +1,54 @@
+-- Agregar la restricción de clave foránea
+ALTER TABLE Producto
+ADD CONSTRAINT fk_Producto_Categoria
+FOREIGN KEY (Categoria_id) REFERENCES Categoria(ID);
+
+ALTER TABLE Stock
+ADD CONSTRAINT fk_Stock_Producto
+FOREIGN KEY (Sucursal_id) REFERENCES Sucursal(ID);
+
+ALTER TABLE Stock
+ADD CONSTRAINT fk_Stock_Sucursal
+FOREIGN KEY (Producto_id) REFERENCES Producto(ID);
+
+ALTER TABLE Orden
+ADD CONSTRAINT fk_Orden_Cliente
+FOREIGN KEY (Cliente_id) REFERENCES Cliente(ID);
+
+ALTER TABLE Orden
+ADD CONSTRAINT fk_Orden_Sucursal
+FOREIGN KEY (Sucursal_id) REFERENCES Sucursal(ID);
+
+ALTER TABLE Item
+ADD CONSTRAINT fk_Item_Orden
+FOREIGN KEY (Orden_id) REFERENCES Orden(ID);
+
+ALTER TABLE Item
+ADD CONSTRAINT fk_Item_Producto
+FOREIGN KEY (Producto_id) REFERENCES Producto(ID);
+
+--Realizar las consultas:
+--Calcular el precio promedio de los productos en cada categoría:
+SELECT c.Nombre as Categoria, AVG(p.Precio_unitario) as PrecioPromedio
+FROM Producto p
+JOIN Categoria c ON p.Categoria_id = c.ID
+GROUP BY c.Nombre;
+--Obtener la cantidad total de productos en stock por categoría:
+SELECT c.Nombre as Categoria, SUM(s.Cantidad) as CantidadTotalEnStock
+FROM Stock s
+JOIN Producto p ON s.Producto_id = p.ID
+JOIN Categoria c ON p.Categoria_id = c.ID
+GROUP BY c.Nombre;
+--Calcular el total de ventas por sucursal:
+SELECT s.Nombre as Sucursal, SUM(i.Monto_venta) as TotalVentas
+FROM Orden o
+JOIN Sucursal s ON o.Sucursal_id = s.ID
+JOIN Item i ON o.ID = i.Orden_id
+GROUP BY s.Nombre;
+--Obtener el cliente que ha realizado el mayor monto de compras:
+SELECT c.Nombre as Cliente, SUM(o.Total) as MontoTotalCompras
+FROM Cliente c
+JOIN Orden o ON c.ID = o.Cliente_id
+GROUP BY c.Nombre
+ORDER BY MontoTotalCompras DESC
+LIMIT 1;
